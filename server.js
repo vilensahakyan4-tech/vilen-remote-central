@@ -9,6 +9,7 @@ function body(req){return new Promise((ok,no)=>{let d='';req.on('data',c=>{d+=c;
 function emit(key,event){
   const receivers=streams.get(key);
   if(receivers?.size){for(const res of receivers)res.write(`data: ${JSON.stringify(event)}\n\n`);return;}
+  if(event?.type==='fallback-frame')return;
   const queue=pendingEvents.get(key)||[];
   queue.push({event,expires:Date.now()+60000});
   pendingEvents.set(key,queue.slice(-128));
